@@ -5,11 +5,12 @@ export const Util = {
     transformColumnProps(props) {
         return props.map(prop => ({
             ...prop,
-            header: (prop.header && prop.header.value) ?? ""
+            header: (prop.header && prop.header.value) ?? "",
+            filter: prop.filter
         }));
     },
 
-    getColumnsConfig(labels, hasFilter) {
+    getColumnsConfig(labels) {
         return labels.map(label => {
             const header = {
                 accessor: label.attribute.id,
@@ -19,12 +20,12 @@ export const Util = {
                 isSortable: true,
                 type: label.attribute.type.toLowerCase(),
                 isEditable: false,
-                filterable: hasFilter
+                filterable: label.filter ?? false
             };
             return header;
         });
     },
-    getColumnsConfigRow(labels, grouper, agregator, hasFilter,aggregatorCaption) {
+    getColumnsConfigRow(labels, grouper, agregator, aggregatorCaption) {
         return labels.map((label, index) => {
             let header = {
                 accessor: label.attribute.id,
@@ -33,23 +34,22 @@ export const Util = {
                 width: "1fr",
                 isSortable: true,
                 type: label.attribute.type.toLowerCase(),
-                isEditable: false,
-                filterable: hasFilter
+                isEditable: false,               
             };
             if (index === 0) {
-               header={...header, expandable: true,}
+                header = { ...header, expandable: true };
             }
             if (grouper.id === label.attribute.id) {
                 header = {
                     ...header,
-                   
+
                     cellRenderer: ({ row }) => {
                         const hasChildren = row.items && Array.isArray(row.items);
                         return !hasChildren ? (
                             row[grouper.id]
                         ) : (
-                            <span className="font-medium">
-                                <b>{aggregatorCaption.value}</b>
+                            <span className="font-bold">
+                                {aggregatorCaption.value}
                             </span>
                         );
                     }
@@ -65,13 +65,13 @@ export const Util = {
                     cellRenderer: ({ row }) => {
                         const hasChildren = row.items && Array.isArray(row.items);
                         const value = row[label.attribute.id];
-                         return !hasChildren ? (
-                            <p>{value?.toLocaleString()}</p>
+                        return !hasChildren ? (
+                            <span>{value?.toLocaleString()}</span>
                         ) : (
                             <div className={hasChildren ? "font-bold" : ""}>
-                                <b>{value?.toLocaleString()}</b>
+                                {value?.toLocaleString()}
                             </div>
-                        );                        
+                        );
                     }
                 };
             }

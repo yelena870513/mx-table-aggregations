@@ -1,0 +1,10 @@
+.st-expand-icon{
+    fill:var( --st-dropdown-group-label-color)
+}
+.st-footer-results-text{
+    color:var(--st-tooltip-text-color);
+    font-size: 1.2rem;
+}
+.font-bold{
+    font-weight: 700;
+}

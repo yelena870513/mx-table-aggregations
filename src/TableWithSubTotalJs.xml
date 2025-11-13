@@ -22,8 +22,8 @@
                 <description>List of items</description>
             </property>
             <property key="isAggregated" type="boolean" defaultValue="false">
-                <caption>Show Subtotal Column</caption>
-                <description>Whether to show subtotal column</description>
+                <caption>Show Aggregated Column</caption>
+                <description>Whether to show aggregated column</description>
             </property>
             <property key="grouping" type="attribute" dataSource="datasource" required="false">
                 <caption>Groupping Field</caption>
@@ -44,8 +44,12 @@
                 </attributeTypes>
             </property>
             <property key="aggregatorCaption" type="textTemplate" required="false">
-                <caption>Aggregator caption </caption>
+                <caption>Aggregator caption</caption>
                 <description>Show aggregator caption</description>
+            </property>
+            <property key="loadingText" type="string" required="false" defaultValue="Loading data...">
+                <caption>Loading Text</caption>
+                <description>Text to show when data is loading</description>
             </property>
         </propertyGroup>
         <propertyGroup caption="Columns">
@@ -56,7 +60,7 @@
                     <propertyGroup caption="General">
                         <property key="attribute" type="attribute" dataSource="../datasource" required="true">
                             <caption>Attribute</caption>
-                            <description>Attribute is required if the column can be sorted or filtered</description>
+                            <description>Select an attribute from the entity to display</description>
                             <attributeTypes>
                                 <attributeType name="String" />
                                 <attributeType name="AutoNumber" />
@@ -72,6 +76,12 @@
                             <caption>Caption</caption>
                             <description />
                         </property>
+                        <property key="filter" type="boolean" defaultValue="false" required="true">
+                            <caption>Filter</caption>
+                            <description>
+                                Allow if the attribute can be filtered. It works in table without aggregation
+                            </description>
+                        </property>
                     </propertyGroup>
                 </properties>
             </property>
@@ -81,9 +91,18 @@
                 <caption>Page Size</caption>
                 <description>Number of items per page</description>
             </property>
-            <property key="hasFilter" type="boolean" defaultValue="false">
-                <caption>Has Filter</caption>
-                <description>Whether the table has a filter</description>
+            <property key="theme" type="enumeration" defaultValue="custom">
+                <caption>Theme</caption>
+                <description />
+                <enumerationValues>
+                    <enumerationValue key="custom">Green theme</enumerationValue>
+                    <enumerationValue key="frost">Frost</enumerationValue>
+                    <enumerationValue key="light">Light</enumerationValue>
+                    <enumerationValue key="dark">Dark</enumerationValue>
+                    <enumerationValue key="sky">Sky</enumerationValue>
+                    <enumerationValue key="neutral">Neutral</enumerationValue>                    
+                    
+                </enumerationValues>
             </property>
         </propertyGroup>
     </properties>

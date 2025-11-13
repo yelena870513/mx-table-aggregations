@@ -1,10 +1,12 @@
 import React, { useRef, useCallback, useMemo, createElement } from "react";
 import { SimpleTable } from "simple-table-core";
 // import { HEADERS } from "./manufacturing-headers";
-import "./ui/TableWithSubTotalJs.css";
 import "simple-table-core/styles.css";
+import "./ui/TableWithSubTotalJs.css";
+import "./ui/simple-theme.css";
 import { Util } from "./util/utils";
 import { v4 as uuidv4 } from "uuid";
+import { Footer } from "./manufacturing-footer";
 
 export function TableWithSubTotalJs(props) {
     const {
@@ -15,8 +17,9 @@ export function TableWithSubTotalJs(props) {
         isAggregated,
         tableFields,
         pageSize,
-        hasFilter,
-        aggregatorCaption
+        aggregatorCaption,
+        loadingText,
+        theme
     } = props;
     const onClickHandler = useCallback(() => {
         if (onClickAction && onClickAction.canExecute) {
@@ -45,12 +48,12 @@ export function TableWithSubTotalJs(props) {
                     color: "#666"
                 }}
             >
-                Loading data...
+                {loadingText || "Loading data..."}
             </div>
         );
     }
 
-    let headers = Util.getColumnsConfig(labels, hasFilter);
+    let headers = Util.getColumnsConfig(labels);
     let dataRows = Util.getDataRows(labels, datasource.items);
     if (!isAggregated) {
         return (
@@ -67,12 +70,54 @@ export function TableWithSubTotalJs(props) {
                     id={id.current}
                     rowsPerPage={pageSize}
                     editColumns={true}
+                    theme={theme}
+                    useOddEvenRowBackground={true}
+                    useHoverRowBackground={true}
+                    footerRenderer={({
+    
+    totalRows,
+    totalPages,
+    hasPrevPage,
+    hasNextPage,
+    onPrevPage,
+    onNextPage,
+    onPageChange,
+    nextIcon,
+    prevIcon
+}) => {
+    return (
+        <div className="st-footer">
+            {/* Left side - Row info */}
+            <div className="st-footer-info">
+                <span className="st-footer-results-text">Total: {totalRows}</span>
+            </div>
+
+            {/* Right side - Page controls */}
+            <div className="st-footer-pagination">
+                <button onClick={onPrevPage}
+                disabled={!hasPrevPage} className="st-next-prev-btn ">{prevIcon}</button>
+
+                {/* Page numbers */}
+                <div>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button  className="st-page-btn" key={page} onClick={() => onPageChange(page)}>
+                            {page}
+                        </button>
+                    ))}
+                </div>
+
+                <button  onClick={onNextPage}
+                disabled={!hasNextPage} className="st-next-prev-btn">{nextIcon}</button>
+            </div>
+        </div>
+    );
+}}
                 />
             </div>
         );
     }
     dataRows = [...Util.getGroupByAggregator(dataRows, grouping.id)];
-    headers = [...Util.getColumnsConfigRow(labels, grouping, aggregator, hasFilter, aggregatorCaption)];
+    headers = [...Util.getColumnsConfigRow(labels, grouping, aggregator, aggregatorCaption)];
 
     return (
         <div>
@@ -89,6 +134,48 @@ export function TableWithSubTotalJs(props) {
                 id={id.current}
                 rowsPerPage={pageSize}
                 editColumns={true}
+                theme={theme}
+                useOddEvenRowBackground={true}
+                useHoverRowBackground={true}
+                footerRenderer={({
+    
+    totalRows,
+    totalPages,
+    hasPrevPage,
+    hasNextPage,
+    onPrevPage,
+    onNextPage,
+    onPageChange,
+    nextIcon,
+    prevIcon
+}) => {
+    return (
+        <div className="st-footer">
+            {/* Left side - Row info */}
+            <div className="st-footer-info">
+                <span className="st-footer-results-text">Total: {totalRows}</span>
+            </div>
+
+            {/* Right side - Page controls */}
+            <div className="st-footer-pagination">
+                <button onClick={onPrevPage}
+                disabled={!hasPrevPage} className="st-next-prev-btn ">{prevIcon}</button>
+
+                {/* Page numbers */}
+                <div>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button  className="st-page-btn" key={page} onClick={() => onPageChange(page)}>
+                            {page}
+                        </button>
+                    ))}
+                </div>
+
+                <button  onClick={onNextPage}
+                disabled={!hasNextPage} className="st-next-prev-btn">{nextIcon}</button>
+            </div>
+        </div>
+    );
+}}
             />
         </div>
     );
