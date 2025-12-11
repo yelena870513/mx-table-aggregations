@@ -47,9 +47,13 @@
                 <caption>Aggregator caption</caption>
                 <description>Show aggregator caption</description>
             </property>
-            <property key="loadingText" type="string" required="false" defaultValue="Loading data...">
+            <property key="loadingText" type="textTemplate" required="false" >
                 <caption>Loading Text</caption>
                 <description>Text to show when data is loading</description>
+            </property>
+             <property key="columnEditorText" type="textTemplate" required="false" >
+                <caption>Columns Editor Text</caption>
+                <description>Columns Editor Text</description>
             </property>
         </propertyGroup>
         <propertyGroup caption="Columns">

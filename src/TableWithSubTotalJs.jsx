@@ -19,6 +19,7 @@ export function TableWithSubTotalJs(props) {
         pageSize,
         aggregatorCaption,
         loadingText,
+        columnEditorText,
         theme
     } = props;
     const onClickHandler = useCallback(() => {
@@ -48,7 +49,7 @@ export function TableWithSubTotalJs(props) {
                     color: "#666"
                 }}
             >
-                {loadingText || "Loading data..."}
+                {loadingText.value || "Loading data..."}
             </div>
         );
     }
@@ -73,6 +74,7 @@ export function TableWithSubTotalJs(props) {
                     theme={theme}
                     useOddEvenRowBackground={true}
                     useHoverRowBackground={true}
+                    columnEditorText={columnEditorText.value}
                     footerRenderer={({
     
     totalRows,
@@ -137,6 +139,7 @@ export function TableWithSubTotalJs(props) {
                 theme={theme}
                 useOddEvenRowBackground={true}
                 useHoverRowBackground={true}
+                columnEditorText={columnEditorText.value}
                 footerRenderer={({
     
     totalRows,
