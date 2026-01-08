@@ -184,8 +184,8 @@ export const HEADERS = [
         aggregation: { type: "sum" },
         cellRenderer: ({ row }) => {
             const hasChildren = row.stations && Array.isArray(row.stations);
-            const value = row.outputRate;
-            return <div className={hasChildren ? "font-bold" : ""}>{value.toLocaleString()}</div>;
+            const value = Number(row.outputRate);
+            return <div className={hasChildren ? "font-bold" : ""}>{value.toFixed(2)}</div>;
         }
     },
     {
@@ -200,8 +200,8 @@ export const HEADERS = [
         cellRenderer: ({ row }) => {
             const hasChildren = row.stations && Array.isArray(row.stations);
             if (hasChildren) {
-                const value = row.cycletime;
-                return <span className="font-bold">{value?.toFixed(1)}</span>;
+                const value = Number(row.cycletime);
+                return <span className="font-bold">{value?.toFixed(2)}</span>;
             }
             return <span>{row.cycletime}</span>;
         }

@@ -18,7 +18,7 @@ export const Util = {
                 minWidth: 80,
                 width: "1fr",
                 isSortable: true,
-                type: label.attribute.type.toLowerCase(),
+                type: this.getDataType(label.attribute.type.toLowerCase()),
                 isEditable: false,
                 filterable: label.filter ?? false
             };
@@ -33,8 +33,8 @@ export const Util = {
                 minWidth: 80,
                 width: "1fr",
                 isSortable: true,
-                type: label.attribute.type.toLowerCase(),
-                isEditable: false,               
+                type: this.getDataType(label.attribute.type.toLowerCase()),
+                isEditable: false
             };
             if (index === 0) {
                 header = { ...header, expandable: true };
@@ -48,9 +48,7 @@ export const Util = {
                         return !hasChildren ? (
                             row[grouper.id]
                         ) : (
-                            <span className="font-bold">
-                                {aggregatorCaption.value}
-                            </span>
+                            <span className="font-bold">{aggregatorCaption.value}</span>
                         );
                     }
                 };
@@ -64,13 +62,17 @@ export const Util = {
                     },
                     cellRenderer: ({ row }) => {
                         const hasChildren = row.items && Array.isArray(row.items);
-                        const value = row[label.attribute.id];
+                        let value = row[label.attribute.id];
+                        if (!hasChildren) {
+                            value = value.toString().replace(",", ".");
+                        }
+
+                        value = Number(value);
+
                         return !hasChildren ? (
-                            <span>{value?.toLocaleString()}</span>
+                            <span>{value.toFixed(3)}</span>
                         ) : (
-                            <div className={hasChildren ? "font-bold" : ""}>
-                                {value?.toLocaleString()}
-                            </div>
+                            <div className={hasChildren ? "font-bold" : ""}>{value.toFixed(3)}</div>
                         );
                     }
                 };
@@ -84,7 +86,13 @@ export const Util = {
         };
         labels.forEach(label => {
             const value = label.attribute.get(item);
-            values[label.attribute.id] = value ? value.displayValue : "";
+            const type = label.attribute.type.toLowerCase();
+            if (type === "decimal") {
+                let txtNumber = value.displayValue.replace(",", ".");
+                values[label.attribute.id] = Number(txtNumber).toFixed(3) ?? 0;
+            } else {
+                values[label.attribute.id] = value ? value.displayValue : "";
+            }
         });
         return values;
     },
@@ -104,5 +112,23 @@ export const Util = {
             grouped[item[groupeId]].items.push(item);
         });
         return Object.values(grouped);
+    },
+    getDataType(value) {
+        switch (value) {
+            case "string":
+            case "guid":
+            case "date":
+            case "datetime":
+                return "string";
+            case "boolean":
+                return "boolean";
+            case "integer":
+            case "decimal":
+            case "nanointeger":
+            case "float":
+                return "number";
+            default:
+                return "string";
+        }
     }
 };
