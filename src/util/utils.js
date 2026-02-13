@@ -1,6 +1,10 @@
 import React, { createElement } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+const formatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 3,
+});
 export const Util = {
     transformColumnProps(props) {
         return props.map(prop => ({
@@ -20,7 +24,20 @@ export const Util = {
                 isSortable: true,
                 type: this.getDataType(label.attribute.type.toLowerCase()),
                 isEditable: false,
-                filterable: label.filter ?? false
+                filterable: label.filter ?? false,
+                cellRenderer: ({ row }) => {                       
+                        let value = row[label.attribute.id];                  
+                       if (label.attribute.type.toLowerCase() === "decimal") {
+                        if (value === null || value === undefined || value === "") {
+                            value = 0;
+                        }
+                        let txtNumber = value.toString().replace(",", "."); 
+                        value = formatter.format(Number(txtNumber).toFixed(3));
+                     }
+                        return  (
+                            <span>{value}</span>
+                        ) 
+                    }
             };
             return header;
         });
@@ -34,10 +51,20 @@ export const Util = {
                 width: "1fr",
                 isSortable: true,
                 type: this.getDataType(label.attribute.type.toLowerCase()),
-                isEditable: false
+                isEditable: false,
+                 
             };
             if (index === 0) {
-                header = { ...header, expandable: true };
+                header = { ...header, expandable: true,
+                     cellRenderer: ({ row }) => {
+                        const hasChildren = row.items && Array.isArray(row.items);
+                        return !hasChildren ? (
+                            row[label.attribute.id]
+                        ) : (
+                            <span className="font-bold">{aggregatorCaption.value}</span>
+                        );
+                    }
+                 };
             }
             if (grouper.id === label.attribute.id) {
                 header = {
@@ -48,7 +75,7 @@ export const Util = {
                         return !hasChildren ? (
                             row[grouper.id]
                         ) : (
-                            <span className="font-bold">{aggregatorCaption.value}</span>
+                            <span className="font-bold"></span>
                         );
                     }
                 };
@@ -70,9 +97,9 @@ export const Util = {
                         value = Number(value);
 
                         return !hasChildren ? (
-                            <span>{value.toFixed(3)}</span>
+                            <span>{formatter.format(value)}</span>
                         ) : (
-                            <div className={hasChildren ? "font-bold" : ""}>{value.toFixed(3)}</div>
+                            <div className={hasChildren ? "font-bold" : ""}>{formatter.format(value)}</div>
                         );
                     }
                 };
